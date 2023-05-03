@@ -76,6 +76,6 @@ train_labels = mn.train_labels()
 conv = Convolucion(8)
 pool = MaxPool()
 
-output = conv.forward(train_images[0])
-output = pool.forward(output)
+output = conv.pasada(train_images[0])
+output = pool.pasada(output)
 print(output.shape) # (13, 13, 8)

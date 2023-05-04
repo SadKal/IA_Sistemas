@@ -2,6 +2,7 @@ import numpy as np
 import mnist as mn
 from softmax import Softmax 
 
+#Prueba
 class Convolucion:
 
   def __init__(self, num_filtros):

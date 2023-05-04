@@ -50,4 +50,4 @@ class Softmax:
       #Actualizamos pesos y desviaciones
       self.pesos -= ratio_aprendizaje * d_L_d_w
       self.biases -= ratio_aprendizaje * d_L_d_b
-      return d_L_d_inputs.reshape(self.last_input_shape)
+      return d_L_d_inputs.reshape(self.forma_ultima_entrada)

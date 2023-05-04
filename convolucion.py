@@ -25,6 +25,8 @@ class Convolucion:
     '''
     Hace una pasada a la red neuronal
     '''
+    self.ultima_entrada = input
+
     h, w = input.shape
     salida = np.zeros((h - 2, w - 2, self.num_filtros))
 
@@ -34,3 +36,16 @@ class Convolucion:
       salida[i, j] = np.sum(im_region * self.filtros, axis=(1, 2))
 
     return salida
+  
+  def pasada_atras(self, d_L_d_out, ratio_apr):
+
+    d_L_d_filters = np.zeros(self.filtros.shape)
+
+    for im_region, i, j in self.iterar_regiones_imagen(self.ultima_entrada):
+      for f in range(self.num_filtros):
+        d_L_d_filters[f] += d_L_d_out[i, j, f] * im_region
+
+    # Actualizamos filtros
+    self.filtros -= ratio_apr * d_L_d_filters
+
+    return None

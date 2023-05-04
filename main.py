@@ -22,23 +22,62 @@ def pasada(imagen, etiqueta):
 
   return salida, perdida, precision
 
+def entrenar(im, etiqueta, lr=.005):
+  '''
+  Hace un entrenamiento con la imagen y etiqueta que se le pase
+  '''
+  
+  salida, perdida, precision = pasada(im, etiqueta)
+
+  
+  gradient = np.zeros(10)
+  gradient[etiqueta] = -1 / salida[etiqueta]
+
+  # Pasada hacia atras
+  gradient = softmax.pasada_atras(gradient, lr)
+  gradient = pool.pasada_atras(gradient)
+  gradient = conv.pasada_atras(gradient, lr)
+
+  return perdida, precision
+
 conv = Convolucion(8)                  
 pool = MaxPool()                  
 softmax = Softmax(13 * 13 * 8, 10) 
 
-imagenes = mn.test_images()[:1000]
-etiquetas = mn.test_labels()[:1000]
+imagenes_entrenar = mn.train_images()[:10000]
+etiquetas_entrenar = mn.train_labels()[:10000]
+imagenes_prueba = mn.test_images()[:10000]
+etiquetas_prueba = mn.test_labels()[:10000]
+
+
+# Seleccionamos imagenes aleatorias para entrenar
+permutation = np.random.permutation(len(imagenes_entrenar))
+imagenes_entrenar = imagenes_entrenar[permutation]
+etiquetas_entrenar = etiquetas_entrenar[permutation]
+
+  
+perdida = 0
+correctas = 0
+for i, (im, etiqueta) in enumerate(zip(imagenes_entrenar, etiquetas_entrenar)):
+  if i > 0 and i % 100 == 99:
+    print(
+      '[Paso %d] Ultimos 100 pasos: Perdida media %.3f | Precision: %d%%' % (i + 1, perdida / 100, correctas)
+    )
+    perdida = 0
+    correctas = 0
+
+  per, precision = entrenar(im, etiqueta)
+  perdida += per
+  correctas += precision
+
 
 perdida = 0
-num_correctos = 0
-#Enumerate hace que los valores de i sean los de un array
-#Zip hace que dos arrays se combinen---> [1,2] y [a,b] pasarian a ser [(1,a), (2,b)]
-for i, (im, etiqueta) in enumerate(zip(imagenes, etiquetas)):
+correctas = 0
+for im, etiqueta in zip(imagenes_prueba, etiquetas_prueba):
   _, l, precision = pasada(im, etiqueta)
   perdida += l
-  num_correctos += precision
+  correctas += precision
 
-  if i % 100 == 99:
-    print('[Paso %d] Ultimos 100 pasos: Perdida media: %.3f | Precision: %d%%' % (i + 1, perdida / 100, num_correctos))
-    perdida = 0
-    num_correctos = 0
+num_tests = len(imagenes_prueba)
+print('Test Loss:', perdida / num_tests)
+print('Test Accuracy:', correctas / num_tests)

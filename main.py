@@ -76,7 +76,6 @@ for i, (im, etiqueta) in enumerate(zip(imagenes_entrenar, etiquetas_entrenar)):
   correctas += precision
 
 
-
 """
 perdida = 0
 correctas = 0
@@ -84,6 +83,10 @@ for im, etiqueta in zip(imagenes_prueba, etiquetas_prueba):
   _, l, precision = pasada(im, etiqueta)
   perdida += l
   correctas += precision
+  for elem in enumerate(_):
+    print(elem)
+  print(precision)
+  print(etiqueta)
 
 num_tests = len(imagenes_prueba)
 print('Perdida:', perdida / num_tests)
@@ -92,14 +95,16 @@ print('Precision:', correctas / num_tests)
 
 
 #Probar con una imagen nuestra
-img = r'C:\Users\huert\git\IA_Sistemas\img.png'
+img = r'C:\Users\huert\git\IA_Sistemas\img2.png'
 test_image= cv2.imread(img, cv2.IMREAD_GRAYSCALE)
 
 img_resized=cv2.resize(test_image, (28,28), interpolation=cv2.INTER_LINEAR)
-plt.imshow(img_resized,cmap='gray')
-plt.show()
+img_resized=cv2.bitwise_not(img_resized)
+#plt.imshow(img_resized,cmap='gray')
+#plt.show()
 
-salida, perdida, precision = pasada(img_resized, 8)
-print('Salida:', salida)
+salida, l, precision = pasada(img_resized, 2)
+for elem in enumerate(salida):
+  print(elem)
 print('El numero es probablemente: ', np.argmax(salida))
 

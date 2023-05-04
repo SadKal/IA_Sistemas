@@ -1,5 +1,6 @@
 import numpy as np
 import mnist as mn
+
 class MaxPool:
   #Funcion para hacer pooling
 

@@ -1,5 +1,6 @@
 import numpy as np
 import mnist as mn
+
 class Convolucion:
 
   def __init__(self, num_filtros):

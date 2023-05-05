@@ -49,32 +49,33 @@ conv = Convolucion(8)
 pool = MaxPool()                  
 softmax = Softmax(13 * 13 * 8, 10) 
 
-imagenes_entrenar = mn.train_images()[:3000]
-etiquetas_entrenar = mn.train_labels()[:3000]
+imagenes_entrenar = mn.train_images()[:1000]
+etiquetas_entrenar = mn.train_labels()[:1000]
 imagenes_prueba = mn.test_images()[:1000]
 etiquetas_prueba = mn.test_labels()[:1000]
 
 
+
+
+for epoca in range(3):
 # Seleccionamos imagenes aleatorias para entrenar
-permutation = np.random.permutation(len(imagenes_entrenar))
-imagenes_entrenar = imagenes_entrenar[permutation]
-etiquetas_entrenar = etiquetas_entrenar[permutation]
+  permutation = np.random.permutation(len(imagenes_entrenar))
+  imagenes_entrenar = imagenes_entrenar[permutation]
+  etiquetas_entrenar = etiquetas_entrenar[permutation]
+  perdida = 0
+  correctas = 0
+  print('EPOCA: ', epoca)
+  for i, (im, etiqueta) in enumerate(zip(imagenes_entrenar, etiquetas_entrenar)):
+    if i > 0 and i % 100 == 99:     
+      print(
+        '[Paso %d] Ultimos 100 pasos: Perdida media %.3f | Precision: %d%%' % (i + 1, perdida / 100,  correctas)
+      )
+      perdida = 0
+      correctas = 0
 
-
-perdida = 0
-correctas = 0
-for i, (im, etiqueta) in enumerate(zip(imagenes_entrenar, etiquetas_entrenar)):
-  if i > 0 and i % 100 == 99:
-    print(
-      '[Paso %d] Ultimos 100 pasos: Perdida media %.3f | Precision: %d%%' % (i + 1, perdida / 100, correctas)
-    )
-    perdida = 0
-    correctas = 0
-
-  per, precision = entrenar(im, etiqueta)
-  perdida += per
-  correctas += precision
-
+    per, precision = entrenar(im, etiqueta)
+    perdida += per
+    correctas += precision
 
 """
 perdida = 0
@@ -83,6 +84,9 @@ for im, etiqueta in zip(imagenes_prueba, etiquetas_prueba):
   _, l, precision = pasada(im, etiqueta)
   perdida += l
   correctas += precision
+
+  if(etiqueta==3):
+    print(im)
   for elem in enumerate(_):
     print(elem)
   print(precision)
@@ -95,13 +99,14 @@ print('Precision:', correctas / num_tests)
 
 
 #Probar con una imagen nuestra
-img = r'C:\Users\huert\git\IA_Sistemas\img2.png'
+img = r'C:\Users\huert\Desktop\DAW\Sistemas\red_neuronal\IA_Sistemas\img2.png'
 test_image= cv2.imread(img, cv2.IMREAD_GRAYSCALE)
 
 img_resized=cv2.resize(test_image, (28,28), interpolation=cv2.INTER_LINEAR)
 img_resized=cv2.bitwise_not(img_resized)
 #plt.imshow(img_resized,cmap='gray')
 #plt.show()
+
 
 salida, l, precision = pasada(img_resized, 2)
 for elem in enumerate(salida):
